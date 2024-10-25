@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Устанавливаем expect
+echo "Установка expect..."
+sudo apt update
+sudo apt install expect -y
+
 # Обновляем пакеты
 echo "Обновление системы..."
 sudo apt update && sudo apt upgrade -y
