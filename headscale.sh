@@ -4,4 +4,4 @@ wget --output-document=headscale.deb \
 https://github.com/juanfont/headscale/releases/download/v0.23.0/headscale_0.23.0_linux_amd64.deb
 cd /
 sudo apt install /headscale.deb
-sudo vim /etc/headscale/config.sdyaml
+sudo vim /root/headscale/config.sdyaml
