@@ -33,7 +33,15 @@ fi
 
 # Generate auth key for user adminhq
 echo -e "\e[34mGenerating auth key for user adminhq...\e[0m"  # Blue text
-AUTH_KEY=$(headscale preauthkeys create --user adminhq 2>&1) || handle_error "Failed to generate auth key. Output: $AUTH_KEY"
+AUTH_OUTPUT=$(headscale preauthkeys create --user adminhq 2>&1) || handle_error "Failed to generate auth key."
+
+# Extract just the auth key from the output
+AUTH_KEY=$(echo "$AUTH_OUTPUT" | grep -oE '[a-f0-9]{40}')  # Regular expression to match the hex key
+
+# Check if the key was extracted successfully
+if [[ -z "$AUTH_KEY" ]]; then
+    handle_error "Failed to extract the auth key. Output: $AUTH_OUTPUT"
+fi
 
 # Output message for client connection
 echo -e "\e[32mSetup client devices: You can now use the generated key to connect client devices to Headscale. On the client, run:\e[0m"  # Green text
