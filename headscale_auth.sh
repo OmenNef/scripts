@@ -2,7 +2,7 @@
 
 # Функция для обработки ошибок
 handle_error() {
-    echo "Ошибка: $1"
+    echo -e "\e[31mОшибка: $1\e[0m"  # Красный текст для ошибок
     exit 1
 }
 
@@ -12,13 +12,13 @@ if ! command -v headscale &> /dev/null; then
 fi
 
 # Создание пользователя adminhq
-echo "Создание пользователя adminhq..."
+echo -e "\e[34mСоздание пользователя adminhq...\e[0m"  # Синий текст
 headscale users create adminhq || handle_error "Не удалось создать пользователя adminhq."
 
 # Генерация ключа авторизации для пользователя adminhq без флага --expiration
-echo "Генерация ключа авторизации для пользователя adminhq..."
+echo -e "\e[34mГенерация ключа авторизации для пользователя adminhq...\e[0m"  # Синий текст
 AUTH_KEY=$(headscale authkey --user adminhq) || handle_error "Не удалось сгенерировать ключ авторизации."
 
 # Вывод сообщения для подключения клиента
-echo -e "\e[32mПодключите клиента с помощью следующей команды:\e[0m"
-echo "tailscale up --authkey=$AUTH_KEY"
+echo -e "\e[32mПодключите клиента с помощью следующей команды:\e[0m"  # Зеленый текст
+printf "tailscale up --authkey=%s\n" "$AUTH_KEY"  # Используем printf для корректного отображения
