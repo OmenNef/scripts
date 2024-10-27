@@ -12,18 +12,29 @@ if ! command -v headscale &> /dev/null; then
 fi
 
 # Create the user adminhq
-echo -e "\e[34mCreating user adminhq...\e[0m"  # Blue text
-headscale users create adminhq || handle_error "Failed to create user adminhq."
-
-# Generate an auth key for user adminhq without the --expiration flag
-echo -e "\e[34mGenerating auth key for user adminhq...\e[0m"  # Blue text
-AUTH_KEY=$(headscale authkey --user adminhq 2>&1) || handle_error "Failed to generate auth key."
-
-# Check if the key is not empty
-if [ -z "$AUTH_KEY" ]; then
-    handle_error "Auth key is empty. Please ensure that user adminhq exists."
+echo -e "\e[34mAdding user adminhq...\e[0m"  # Blue text
+if headscale users create adminhq; then
+    echo -e "\e[32mUser adminhq added successfully.\e[0m"  # Green text
+else
+    echo -e "\e[33mUser adminhq already exists.\e[0m"  # Yellow text
+    read -p "Do you want to delete the existing user and create a new one? (y/n): " answer
+    if [[ "$answer" == "y" ]]; then
+        echo -e "\e[34mDeleting user adminhq...\e[0m"  # Blue text
+        headscale users delete adminhq || handle_error "Failed to delete user adminhq."
+        echo -e "\e[34mRe-adding user adminhq...\e[0m"  # Blue text
+        headscale users create adminhq || handle_error "Failed to re-add user adminhq."
+        echo -e "\e[32mUser adminhq re-added successfully.\e[0m"  # Green text
+    elif [[ "$answer" == "n" ]]; then
+        handle_error "User adminhq already exists. Exiting."
+    else
+        handle_error "Invalid option. Exiting."
+    fi
 fi
 
+# Generate auth key for user adminhq
+echo -e "\e[34mGenerating auth key for user adminhq...\e[0m"  # Blue text
+AUTH_KEY=$(headscale preauthkeys create --user adminhq --format "text" 2>&1) || handle_error "Failed to generate auth key."
+
 # Output message for client connection
-echo -e "\e[32mConnect the client using the following command:\e[0m"  # Green text
+echo -e "\e[32mSetup client devices: You can now use the generated key to connect client devices to Headscale. On the client, run:\e[0m"  # Green text
 printf "tailscale up --authkey=%s\n" "$AUTH_KEY"  # Use printf for proper output
