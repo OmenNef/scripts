@@ -33,12 +33,7 @@ fi
 
 # Generate auth key for user adminhq
 echo -e "\e[34mGenerating auth key for user adminhq...\e[0m"  # Blue text
-AUTH_KEY=$(headscale preauthkeys create --user adminhq --format "text" 2>&1)
-
-# Check if the key generation failed
-if [[ $? -ne 0 ]]; then
-    handle_error "Failed to generate auth key. Output: $AUTH_KEY"
-fi
+AUTH_KEY=$(headscale preauthkeys create --user adminhq 2>&1) || handle_error "Failed to generate auth key. Output: $AUTH_KEY"
 
 # Output message for client connection
 echo -e "\e[32mSetup client devices: You can now use the generated key to connect client devices to Headscale. On the client, run:\e[0m"  # Green text
