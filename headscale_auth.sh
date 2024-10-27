@@ -15,9 +15,9 @@ fi
 echo "Создание пользователя adminhq..."
 headscale users create adminhq || handle_error "Не удалось создать пользователя adminhq."
 
-# Генерация ключа авторизации для пользователя adminhq
+# Генерация ключа авторизации для пользователя adminhq без флага --expiration
 echo "Генерация ключа авторизации для пользователя adminhq..."
-AUTH_KEY=$(headscale authkey --user adminhq --expiration 24h) || handle_error "Не удалось сгенерировать ключ авторизации."
+AUTH_KEY=$(headscale authkey --user adminhq) || handle_error "Не удалось сгенерировать ключ авторизации."
 
 # Вывод сообщения для подключения клиента
 echo -e "\e[32mПодключите клиента с помощью следующей команды:\e[0m"
